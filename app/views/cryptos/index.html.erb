@@ -1,0 +1,84 @@
+
+  <!-- Main Content -->
+  <div class="container">
+    <%= form_tag "/cryptos", method: :get do %>
+      <h1>Location</h1>
+      <div>
+          <%= label_tag "Rank to start at" %>
+          <%= text_field_tag :start %>
+      </div>  
+
+      <div>
+          <%= label_tag "Limit" %>
+          <%= text_field_tag :limit %>
+      </div> 
+                
+      <div>
+          <%= label_tag "Coin name(not ticker)" %>
+          <%= text_field_tag :id %>
+      </div>           
+
+      <div>
+        <%= submit_tag "submit" %>
+      </div>
+    <% end %>
+  </div>
+  
+  <% if params[:id] != "" && @response_ticker%>
+    <div class="card">
+    <div class="card-header">
+      <h1><%= @response_ticker[0]['name'] %></h1>
+    </div>
+    <div class="card-block">
+      <blockquote class="card-blockquote">
+        <div class="row">
+          <div class="col-6">
+            <p><b>Symbol:</b> <%= @response_ticker[0]['symbol'] %></p>
+            <p><b>Rank:</b> <%= @response_ticker[0]['rank'] %></p>
+            <p><b>Price in USD:</b> <%= number_to_currency(@response_ticker[0]['price_usd']) %></p>
+            <p><b>Price in BTC:</b> <%= @response_ticker[0]['price_btc'] %></p>
+          </div> 
+
+          <div class="col-6">
+            <p><b>Market Cap in USD:</b> <%= number_to_currency(@response_ticker[0]['market_cap_usd']) %></p>
+            <p><b>Supply:</b> <%= number_with_precision(@response_ticker[0]['available_supply'], :precision => 0, :delimiter => ',')%>/<%= number_with_precision(@response_ticker[0]['total_supply'], :precision => 0, :delimiter => ',')%></p>
+            <p><b>7 day change:</b> <%= @response_ticker[0]['percent_change_7d']%>%</p>
+            <p><b>Price if at BTC market cap:</b> <%= number_to_currency(@response_ticker[0]['price_usd'].to_f * (@bitcoin_cap / (@response_ticker[0]['market_cap_usd'].to_f)))%></p>
+          </div>
+        </div>
+
+      </blockquote>
+    </div>
+  </div>
+  <% else %>
+
+    <div class="card">
+    <% @response.each do |response| %>
+    <div class="card-header">
+      <h1><%= response['name'] %></h1>
+    </div>
+    <div class="card-block">
+      <blockquote class="card-blockquote">
+        <div class="row">
+          <div class="col-6">
+            <p><b>Symbol:</b> <%= response['symbol'] %></p>
+            <p><b>Rank:</b> <%= response['rank'] %></p>
+            <p><b>Price in USD:</b> <%= number_to_currency(response['price_usd']) %></p>
+            <p><b>Price in BTC:</b> <%= response['price_btc'] %></p>
+          </div> 
+
+          <div class="col-6">
+            <p><b>Market Cap in USD:</b> <%= number_to_currency(response['market_cap_usd']) %></p>
+            <p><b>Supply:</b> <%= number_with_precision(response['available_supply'], :precision => 0, :delimiter => ',')%>/<%= number_with_precision(response['total_supply'], :precision => 0, :delimiter => ',')%></p>
+            <p><b>7 day change:</b> <%= response['percent_change_7d']%>%</p>
+            <p><b>Price if at BTC market cap:</b> <%= number_to_currency(response['price_usd'].to_f * (@bitcoin_cap / (response['market_cap_usd'].to_f)))%></p>
+          </div>
+        </div>
+
+      </blockquote>
+    </div>
+    <% end %>
+  </div>
+  <% end %>
+
+  
